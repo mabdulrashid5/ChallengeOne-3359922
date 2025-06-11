@@ -1,0 +1,67 @@
+
+class LetterNode {
+  constructor() {
+    this.links = {};       
+    this.endsWord = false;  
+  }
+}
+
+
+class WordTrie {
+  constructor() {
+    this.start = new LetterNode();  
+  }
+
+ 
+  addWord(word) {
+    let currentNode = this.start;
+    
+    for (const letter of word) {
+      if (!currentNode.links[letter]) {
+        currentNode.links[letter] = new LetterNode();
+      }
+      currentNode = currentNode.links[letter];
+    }
+    
+    currentNode.endsWord = true; 
+  }
+
+ 
+  hasWord(word) {
+    const endNode = this._walkTo(word);
+    return !!endNode && endNode.endsWord;
+  }
+
+  
+  hasPrefix(prefix) {
+    return !!this._walkTo(prefix);
+  }
+
+
+  _walkTo(letters) {
+    let currentNode = this.start;
+    
+    for (const letter of letters) {
+      if (!currentNode.links[letter]) {
+        return null;
+      }
+      currentNode = currentNode.links[letter];
+    }
+    
+    return currentNode;
+  }
+}
+
+
+const dictionary = new WordTrie();
+
+
+dictionary.addWord("apple");
+dictionary.addWord("application");
+dictionary.addWord("appetizer");
+
+
+console.log("Has 'apple'?", dictionary.hasWord("apple"));       // true
+console.log("Has 'app'?", dictionary.hasWord("app"));           // false
+console.log("Has prefix 'app'?", dictionary.hasPrefix("app"));   // true
+console.log("Has 'ape'?", dictionary.hasWord("ape"));            // false
